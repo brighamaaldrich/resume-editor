@@ -841,6 +841,55 @@ input[type='range'] {
 	}
 }
 
+/* ---------- Print tips dialog ---------- */
+
+.modal-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	background: rgba(0, 0, 0, 0.55);
+}
+
+.modal {
+	width: min(440px, 100%);
+	background: var(--ui-raised);
+	border: 1px solid var(--ui-border);
+	border-radius: 10px;
+	box-shadow: 0 12px 40px var(--ui-shadow);
+	padding: 18px 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.modal h2 {
+	margin: 0;
+	font-size: 16px;
+}
+
+.modal p {
+	margin: 0;
+}
+
+.modal ul {
+	margin: 0;
+	padding-left: 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 4px;
+}
+
 /* ---------- Printing / PDF export: only the page, at full size ---------- */
 
 @media print {
@@ -862,7 +911,8 @@ input[type='range'] {
 	}
 	.topbar,
 	.editor-pane,
-	.preview-toolbar {
+	.preview-toolbar,
+	.modal-backdrop {
 		display: none !important;
 	}
 	.page-frame {
@@ -877,9 +927,17 @@ input[type='range'] {
 		overflow: hidden;
 		outline: none !important;
 	}
-	.page,
-	.page * {
-		-webkit-print-color-adjust: exact;
-		print-color-adjust: exact;
+	/* Print background colors (lines, highlights) even when the dialog's
+	   "Background graphics" option is off. */
+	*,
+	*::before,
+	*::after {
+		-webkit-print-color-adjust: exact !important;
+		print-color-adjust: exact !important;
 	}
+}
+
+/* Fallback page box; the exact paper size is set inline by the app. */
+@page {
+	margin: 0;
 }

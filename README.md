@@ -17,8 +17,10 @@ Then open http://localhost:5173.
 
 ## Export a PDF
 
-Click **Export PDF** (or Cmd/Ctrl+P), choose **Save as PDF**, and leave margins
-on Default. The page sets its own size and zero margins. [Placeholder]
+Click **Export PDF** (or Cmd/Ctrl+P) and choose **Save as PDF**. The page sets
+its own print settings (paper size, no margins, so no headers or footers, and
+background colors on), which Chrome, Edge, Arc and Brave apply automatically.
+Safari and Firefox may not, so they get a short checklist before printing. [Placeholder]
 highlights are left out of the PDF unless you turn on **Keep the highlights in
 exported PDF and HTML** under **Style and layout**.
 

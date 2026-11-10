@@ -66,12 +66,82 @@ function Btn({ icon, children, ...props }) {
 	);
 }
 
+// Chromium browsers (Chrome, Edge, Arc, Brave, Opera) honor the page's own
+// print settings: paper size and zero margins from @page (which also leaves
+// no room for headers and footers) and background colors from
+// print-color-adjust. Safari and Firefox may not, so they get a checklist.
+const IS_CHROMIUM = !!navigator.userAgentData?.brands?.some((b) => b.brand === 'Chromium');
+const TIPS_KEY = 'resume-editor:print-tips-hidden';
+const tipsHidden = () => {
+	try {
+		return localStorage.getItem(TIPS_KEY) === '1';
+	} catch {
+		return false;
+	}
+};
+
+function PrintTips({ paper, onPrint, onClose }) {
+	const [hide, setHide] = useState(false);
+	return (
+		<div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+			<div className="modal" role="dialog" aria-modal="true" aria-labelledby="print-tips-title">
+				<h2 id="print-tips-title">Check these print settings</h2>
+				<p className="muted">This browser may not apply the resume's print settings on its own. In the print dialog, set</p>
+				<ul>
+					<li>
+						<strong>Destination</strong> to Save as PDF (in Safari, the PDF menu at the bottom)
+					</li>
+					<li>
+						<strong>Paper size</strong> to {paper}
+					</li>
+					<li>
+						<strong>Margins</strong> to None
+					</li>
+					<li>
+						<strong>Headers and footers</strong> off
+					</li>
+					<li>
+						<strong>Background graphics</strong> (Print backgrounds) on
+					</li>
+				</ul>
+				<p className="muted small">Chrome, Edge, Arc and Brave set all of this automatically.</p>
+				<label className="check">
+					<input type="checkbox" checked={hide} onChange={(e) => setHide(e.target.checked)} />
+					Don't show this again
+				</label>
+				<div className="modal-actions">
+					<button className="btn" onClick={onClose}>
+						Cancel
+					</button>
+					<button
+						className="btn primary"
+						autoFocus
+						onClick={() => {
+							if (hide) {
+								try {
+									localStorage.setItem(TIPS_KEY, '1');
+								} catch {
+									/* not remembered */
+								}
+							}
+							onPrint();
+						}}
+					>
+						<i className="fa-solid fa-file-pdf" /> Continue to print
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 export default function App() {
 	const [library, setLibrary] = useState(loadLibrary);
 	const { doc, update, undo, redo, reset, canUndo, canRedo } = useHistory(library.docs[library.currentId]);
 	const [tab, setTab] = useState('content');
 	const [saved, setSaved] = useState(true);
 	const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'dark');
+	const [printTips, setPrintTips] = useState(false);
 	const fileRef = useRef(null);
 
 	useEffect(() => {
@@ -126,13 +196,20 @@ export default function App() {
 		}
 	};
 
-	const exportPdf = useCallback(async () => {
+	const printNow = useCallback(async () => {
+		setPrintTips(false);
 		await document.fonts.ready;
+		await new Promise((r) => requestAnimationFrame(() => r())); // let the tips dialog close first
 		const prev = document.title;
-		document.title = `${doc.name || 'Resume'} Resume`; // Chrome uses this as the file name
+		document.title = `${doc.name || 'Resume'} Resume`; // used as the PDF file name
 		window.print();
 		document.title = prev;
 	}, [doc.name]);
+
+	const exportPdf = useCallback(() => {
+		if (IS_CHROMIUM || tipsHidden()) printNow();
+		else setPrintTips(true);
+	}, [printNow]);
 
 	useEffect(() => {
 		const onKey = (e) => {
@@ -156,6 +233,9 @@ export default function App() {
 	return (
 		<div className="app">
 			<style>{`@page { size: ${(PAGE_SIZES[doc.style.page] ?? PAGE_SIZES.letter).css}; margin: 0; }`}</style>
+			{printTips && (
+				<PrintTips paper={doc.style.page === 'a4' ? 'A4' : 'Letter'} onPrint={printNow} onClose={() => setPrintTips(false)} />
+			)}
 			<header className="topbar">
 				<div className="brand">
 					<i className="fa-solid fa-file-lines" /> Resume Editor
