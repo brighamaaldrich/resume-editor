@@ -35,14 +35,11 @@ resumes hold personal details) can hold JSON files to import.
 
 ## Deploy
 
-```bash
-npm run deploy
-```
-
-This builds the site and publishes `dist/` to the `gh-pages` branch, which
-GitHub Pages serves. It is a static site with no backend, so uploading `dist/`
-to any static host works too. Each
-visitor's resumes stay in their own browser.
+Every push to `main` builds the site and publishes it to GitHub Pages through
+`.github/workflows/deploy.yml`. You can also run it by hand from the Actions
+tab (Deploy to GitHub Pages, Run workflow). It is a static site with no
+backend, so `npm run build` and uploading `dist/` works on any static host too.
+Each visitor's resumes stay in their own browser.
 
 ## Where things live
 
