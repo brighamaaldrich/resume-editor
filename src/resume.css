@@ -1,0 +1,237 @@
+/* The resume template, adapted from the original style.css.
+   All sizes, colors and spacing come from CSS variables set on .page. */
+
+.page {
+	--xs-gap: calc(0.01in * var(--sp));
+	--sm-gap: calc(0.05in * var(--sp));
+	--md-gap: calc(0.1in * var(--sp));
+	--lg-gap: calc(0.2in * var(--sp));
+	/* --fit is only set temporarily by "Shrink to fit" while it measures. */
+	position: relative;
+	width: var(--page-w);
+	height: var(--page-h);
+	background: white;
+	color: var(--text);
+	font-family: var(--font);
+	font-size: calc(var(--body-size) * var(--fit, 1));
+	line-height: var(--lh);
+	text-align: left;
+	-webkit-font-smoothing: antialiased;
+}
+
+:where(.page) * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.page .main {
+	position: absolute;
+	top: var(--my);
+	bottom: var(--my);
+	left: var(--mx);
+	right: var(--mx);
+	display: flex;
+	gap: var(--lg-gap);
+}
+
+.page .col {
+	min-width: 0;
+	height: 100%;
+}
+
+.page h1 {
+	font-size: var(--name-size);
+	line-height: 1;
+	font-weight: normal;
+	margin-bottom: var(--sm-gap);
+}
+
+.page .job {
+	color: var(--accent);
+	font-size: calc(var(--title-size) * var(--fit, 1));
+	line-height: 1.52;
+	margin-bottom: var(--lg-gap);
+	margin-left: var(--sm-gap);
+}
+
+.page h2 {
+	font-size: calc(var(--section-size) * var(--fit, 1));
+	font-weight: normal;
+	color: var(--accent);
+	display: flex;
+	align-items: center;
+	gap: var(--sm-gap);
+}
+
+.page.caps h2,
+.page.caps .job {
+	text-transform: uppercase;
+}
+
+.page .line {
+	height: 1px;
+	flex-grow: 1;
+	background: var(--accent);
+}
+
+/* Lines hidden but still taking space, so headings stay centered. */
+.page.no-lines .line {
+	visibility: hidden;
+}
+
+.page h3 {
+	font-size: calc(var(--entry-size) * var(--fit, 1));
+	font-weight: bold;
+}
+
+.page .entry h3 {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--md-gap);
+}
+
+.page .date,
+.page .date-2,
+.page .entry a.link {
+	font-size: calc(var(--date-size) * var(--fit, 1));
+	font-weight: normal;
+	white-space: nowrap;
+}
+
+.page .date,
+.page .date-2 {
+	color: var(--accent);
+}
+
+.page .tab {
+	display: grid;
+	grid-template-columns: var(--label-w) 1fr;
+	gap: var(--md-gap);
+}
+
+.page a {
+	color: var(--link);
+	text-decoration: none;
+	font-weight: normal;
+}
+
+.page .links a,
+.page a.link {
+	display: flex;
+	align-items: center;
+	gap: var(--sm-gap);
+}
+
+.page .section {
+	margin-bottom: var(--lg-gap);
+	display: flex;
+	flex-direction: column;
+	gap: var(--md-gap);
+}
+
+.page .section.condensed {
+	gap: var(--sm-gap);
+}
+
+.page ul {
+	margin-left: var(--lg-gap);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sm-gap);
+}
+
+.page .item {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sm-gap);
+}
+
+.page .item p {
+	margin-left: var(--sm-gap);
+}
+
+.page .section > p {
+	margin-left: var(--sm-gap);
+	display: flex;
+	justify-content: space-between;
+	gap: var(--md-gap);
+}
+
+.page .section > p.para {
+	display: block;
+	margin-left: 0;
+}
+
+.page h3 i {
+	margin-right: var(--xs-gap);
+}
+
+.page.hl .fill {
+	background: rgb(255, 236, 153);
+	border-radius: 2px;
+}
+
+/* Placeholder highlights stay out of the PDF unless the user keeps them. */
+@media print {
+	.page.no-print-hl .fill {
+		background: none;
+	}
+}
+
+/* ---------- One column layout ---------- */
+
+.page.one .one-header {
+	text-align: center;
+	margin-bottom: var(--md-gap);
+}
+
+.page.one h1 {
+	margin-bottom: var(--sm-gap);
+}
+
+.page.one .job {
+	margin: 0;
+}
+
+.page.one .job div {
+	display: inline;
+}
+
+.page.one .job div + div::before {
+	content: '|';
+	margin: 0 0.6em;
+}
+
+.page.one .links {
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	column-gap: calc(var(--md-gap) * 2);
+	row-gap: var(--sm-gap);
+}
+
+/* Skill groups become rows: heading on the left, skills on the right. */
+.page.one .sec-skills .item {
+	display: grid;
+	grid-template-columns: 1.5in 1fr;
+	gap: var(--md-gap);
+	align-items: baseline;
+}
+
+.page.one .sec-skills .item p {
+	margin-left: 0;
+}
+
+/* Short lists (languages, awards) flow into two columns. */
+.page.one .section.condensed {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: calc(var(--lg-gap) * 2);
+	row-gap: var(--sm-gap);
+}
+
+.page.one .section.condensed > h2 {
+	grid-column: 1 / -1;
+}

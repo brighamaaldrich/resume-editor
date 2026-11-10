@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Resume Editor</title>
+		<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/dengxian" />
+		<script>
+			// Apply a saved light theme before first paint (dark is the default).
+			try {
+				if (localStorage.getItem('resume-editor:theme') === 'light') document.documentElement.dataset.theme = 'light';
+			} catch {}
+		</script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="/src/main.jsx"></script>
+	</body>
+</html>
